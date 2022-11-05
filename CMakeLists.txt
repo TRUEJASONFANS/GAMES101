@@ -1,20 +1,18 @@
 cmake_minimum_required(VERSION 3.12)
-include(cmake/ucm.cmake)
-set(CMAKE_TOOLCHAIN_FILE ${CMAKE_HOME_DIRECTORY}/vcpkg/scripts/buildsystems/vcpkg.cmake)
+
 set(CMAKE_CXX_STANDARD 17)
 
 project(GAMES101)
-ucm_set_runtime(STATIC)
+#ucm_set_runtime(STATIC)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_HOME_DIRECTORY})
 
 
-set(TARGET_TRIPLET "x86-windows-static")
-if( CMAKE_CL_64 )
-  set( TARGET_TRIPLET "x64-windows-static")
-endif()
 
-set( OpenCV_DIR  ${CMAKE_HOME_DIRECTORY}/vcpkg/installed/${TARGET_TRIPLET}/share/opencv)
-set( Eigen3_DIR  ${CMAKE_HOME_DIRECTORY}/vcpkg/installed/${TARGET_TRIPLET}/share/eigen3)
+set(OpenCV_DIR ${CMAKE_HOME_DIRECTORY}/opencv/build)
+set(Eigen3_DIR ${CMAKE_HOME_DIRECTORY}/eigen)
+
+find_package( OpenCV REQUIRED )
+find_package( Eigen3 REQUIRED)
 
 add_subdirectory(00)
 add_subdirectory(01)
