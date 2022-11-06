@@ -24,10 +24,6 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the model matrix for rotating the triangle around the Z axis.
-    // Then return it.
-
     double rad = DEG2RAD(rotation_angle);
     model << cos(rad),-sin(rad),0,0,
              sin(rad),cos(rad),0,0,
@@ -40,23 +36,43 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar)
 {
-    // Students will implement this function
 
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
-    // Create the projection matrix for the given parameters.
-    // Then return it.
 
-    float top = -tan(DEG2RAD(eye_fov/2.0f) * abs(zNear));
+    Eigen::Matrix4f m;
+    m << zNear, 0, 0, 0,
+            0, zNear, 0, 0,
+            0, 0, zNear + zFar, -zNear * zFar,
+            0, 0, 1, 0;
+
+    float halve = eye_fov/2*MY_PI/180;
+    float top = tan(halve) * zNear;
+    float bottom = -top;
     float right = top * aspect_ratio;
+    float left = -right;
+    Eigen::Matrix4f n, p;
+    n << 2/(right - left), 0, 0, 0,
+            0, 2/(top - bottom), 0, 0,
+            0, 0, 2/(zNear - zFar), 0,
+            0, 0, 0, 1;
 
-    projection << zNear/right,0,0,0,
-                  0,zNear/top,0,0,
-                  0,0,(zNear+zFar)/(zNear-zFar),(2*zNear*zFar)/(zFar-zNear),
-                  0,0,1,0;
+    p << 1, 0, 0, -(right + left)/2,
+            0, 1, 0, -(top + bottom)/2,
+            0, 0, 1, -(zFar + zNear)/2,
+            0, 0, 0, 1;
 
-    return projection;
+    projection = n * p * m;
+
+    std::cout << projection;
+
+//    Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+//    projection << zNear/right,0,0,0,
+//            0,zNear/top,0,0,
+//            0,0,(zNear+zFar)/(zNear-zFar),(2*zNear*zFar)/(zFar-zNear),
+//            0,0,1,0;;
+
+    return projection ;
 }
 
 int main(int argc, const char** argv)
